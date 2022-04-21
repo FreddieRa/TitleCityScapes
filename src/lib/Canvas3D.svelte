@@ -52,13 +52,16 @@
 
             let counter = 0;
             let placed = false;
+
+            let h = shape.height * iScale
             
             while (!placed && counter < 1000) {
-                let h = shape.height * iScale
-
-                let x = (Math.random() - 0.5) * (dScale/h)
                 
-                let z = (Math.random() - 0.5) * (dScale/h)
+
+                // Random placement, with bigger things more central, and greater allowance over time
+                let x = (Math.random() - 0.5) * (dScale/h) * (1 + counter/5000)
+                
+                let z = (Math.random() - 0.5) * (dScale/h) * (1 + counter/5000)
 
                 let dist = x*x + z*z
 
@@ -88,9 +91,45 @@
         })
     }
 
+
+    export function generateShapes2() {
+        shapes = []
+        let newRects = JSON.parse(JSON.stringify(rects))
+
+        // Sort by height
+        newRects.sort((a, b) => {
+            return (b.x1 - b.x0) - (a.x1 - a.x0)
+        })
+
+        for (let i in newRects) {
+            let rect = newRects[i]
+            let shape = {}
+            shape.width = rect.y1 - rect.y0
+            shape.height = rect.x1 - rect.x0
+
+            let h = shape.height * iScale
+            let w = shape.width * iScale
+
+            let c = Math.floor(shape.height) % palette.length
+            let [r, g, b] = palette[c]
+            shape.col = rgbToHex(r, g, b)
+
+            let radius = (i/12 + w)
+            let theta = i + shape.width
+
+            shape.x = Math.cos(theta) * radius
+            shape.z = Math.sin(theta) * radius
+
+            shape.y = h/2
+            
+            shapes.push(shape)
+        }
+
+    }
+
   </script>
   
-  <div>
+  <main class="border">
     <Canvas>
         <!-- <Pass pass={new AdaptiveToneMappingPass(1, 1)}/> -->
         <!-- <Pass pass={new HalftonePass(1, 1, {radius: 4})}/> -->
@@ -144,12 +183,28 @@
         material={new MeshStandardMaterial({ side: DoubleSide, color: 'white' })}
       /> -->
     </Canvas>
-    <button on:click={() => generateShapes()}>Generate Shapes</button>
-  </div>
+    
+    <button on:click={generateShapes2} class="rounded bg-blue-600 text-white px-10 py-1">
+        Build City
+    </button>
+</main>
   
   <style>
-    div {
+    main {
+        position: relative;
       height: 100%;
       width: 100%;
+    }
+
+    button {
+        /* box-sizing: border-box; */
+        position:absolute;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width:fit-content;
+        height:fit-content;
+        bottom:0;
+		/* margin-top: 30px; */
+		/* border: 1px solid #ddd; */
     }
   </style>

@@ -10,6 +10,7 @@
 	let input_overlay;
 	let ioctx;
     let showImage = false;
+    let percentage = 0;
 
     export let rects = [];
 
@@ -17,12 +18,14 @@
         if (file.type.match(/image.*/)) {
             let reader = new FileReader();
             reader.onload = function(e) {
-                input.src = e.target.result;
-                input.onload = () => {
-                    updateCanvas();
+                let img = document.getElementById('input');
+                img.src = e.target.result;
+                img.onload = () => {
+                    console.log("Loaded")
                     showImage = true
+                    updateCanvas();
                 };
-                // updateCanvas();
+                updateCanvas();
             }
             reader.readAsDataURL(file);
         }
@@ -35,7 +38,7 @@
 		Tesseract.recognize(
 			input,
 			'eng',
-			{ logger: (m) => console.log(m) }
+			{ logger: (m) => {console.log(m); percentage = m.progress*100} }
 			//    ).then(({ data: { text } }) => {
 			//       console.log(text);
 			//    })
@@ -85,14 +88,16 @@
 	});
 
     function updateCanvas() {
-        input_overlay.width = input.width;
-		input_overlay.height = input.height;
+        let img = document.getElementById('input');
+        
+        input_overlay.width = img.width;
+		input_overlay.height = img.height;
 		ioctx = input_overlay.getContext('2d');
+        console.log(ioctx)
     }
 </script>
 
-<main ondragover="return false" class="left-0 right-0 top-0 bottom-0 items-center">
-
+<main ondragover="return false" class="border left-0 right-0 top-0 bottom-0 items-center">
 
 	<div bind:this={div} id="img-container" class="">
 		<canvas bind:this={input_overlay} id="input-overlay" class="toFit"/>
@@ -107,8 +112,12 @@
             Drag an Image to Start
         </p>
 	</div>
-    <button on:click={logTesseract} class="rounded bg-blue-600 text-white px-10 py-2">
-        Build City
+
+    <button on:click={logTesseract} 
+        class="rounded border text-grey px-10 py-1"
+        style="background: linear-gradient({90}deg, blue {percentage}%, white {percentage}%)"
+    >
+        Process Image
     </button>
 
 	
