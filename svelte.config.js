@@ -3,31 +3,32 @@ import adapter from '@sveltejs/adapter-static';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
- // Consult https://github.com/sveltejs/svelte-preprocess
- // for more information about preprocessors
- preprocess: preprocess(),
+    // Consult https://github.com/sveltejs/svelte-preprocess
+    // for more information about preprocessors
+    preprocess: preprocess(),
 
- kit: {
- // hydrate the <div id="svelte"> element in src/app.html
-//   target: '#svelte',
-  prerender: {
-      default: true
-},
-  adapter: adapter({
-    pages: 'build',
-    assets: 'build',
-    fallback: null,
-    split: false
-  })
- },
- vite: {
-    optimizeDeps: {
-        exclude: ['three']
-      },
-    ssr: {
-      noExternal: ['three']
-    }
-  }
+    kit: {
+        // hydrate the <div id="svelte"> element in src/app.html
+        //   target: '#svelte',
+        // prerender: {
+        //     default: true
+        // },
+        adapter: adapter({
+            pages: 'build',
+            assets: 'build',
+            fallback: null,
+            split: false
+        }),
+        vite: {
+            optimizeDeps: {
+                exclude: ['three']
+            },
+            ssr: {
+                noExternal: ['three']
+            }
+        }
+    },
+    
 };
 
 export default config;
