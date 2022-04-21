@@ -16,10 +16,14 @@ const config = {
   adapter: adapter({
     pages: 'build',
     assets: 'build',
-    fallback: null
+    fallback: null,
+    split: false
   })
  },
  vite: {
+    optimizeDeps: {
+        exclude: ['three']
+      },
     ssr: {
       noExternal: ['three']
     }

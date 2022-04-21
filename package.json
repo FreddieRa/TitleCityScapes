@@ -33,10 +33,11 @@
     "@fontsource/fira-mono": "^4.5.0",
     "@lukeed/uuid": "^2.0.0",
     "cookie": "^0.4.1",
+    "postprocessing": "^6.26.3",
     "svelte-file-dropzone": "^1.0.0-dev.1",
     "svelte-preprocess": "^4.10.6",
     "tesseract.js": "^2.1.1",
-    "three": "^0.139.2",
-    "threlte": "^2.3.4"
+    "three": "^0.137.5",
+    "threlte": "^2.2.0"
   }
 }

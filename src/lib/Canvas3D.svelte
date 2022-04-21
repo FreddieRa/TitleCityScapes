@@ -1,6 +1,5 @@
 <script>
     import { CircleBufferGeometry, MeshStandardMaterial, BoxBufferGeometry, DoubleSide } from 'three'
-    import { DEG2RAD } from 'three/src/math/MathUtils'
     import {
       AmbientLight,
       Canvas,
@@ -20,7 +19,6 @@
     <Canvas>
       <PerspectiveCamera position={{ x: 10, y: 10, z: 10 }} fov={24}>
         <OrbitControls
-          maxPolarAngle={DEG2RAD * 80}
           autoRotate
           enableZoom={false}
           target={{ y: 0.5 }}
