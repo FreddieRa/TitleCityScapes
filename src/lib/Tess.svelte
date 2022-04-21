@@ -11,6 +11,8 @@
 	let ioctx;
     let showImage = false;
 
+    export let rects = [];
+
     function handleFile(file) {
         if (file.type.match(/image.*/)) {
             let reader = new FileReader();
@@ -20,6 +22,7 @@
                     updateCanvas();
                     showImage = true
                 };
+                // updateCanvas();
             }
             reader.readAsDataURL(file);
         }
@@ -44,6 +47,8 @@
 
 	function onResult(res) {
 		showBoxes(res);
+        console.log(res)
+        rects = res.words.map(r => r.bbox);
 	}
 
 	function showBoxes(res) {
