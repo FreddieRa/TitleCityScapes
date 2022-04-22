@@ -1,11 +1,11 @@
 {
   ".svelte-kit/runtime/client/start.js": {
-    "file": "start-92078a4e.js",
+    "file": "start-2f56603c.js",
     "src": ".svelte-kit/runtime/client/start.js",
     "isEntry": true,
     "imports": [
-      "_index-e7b89a6c.js",
-      "_index-17b744fc.js",
+      "_index-13f37429.js",
+      "_index-f8d5b9cb.js",
       "_singletons-d1fb5791.js"
     ],
     "dynamicImports": [
@@ -18,15 +18,15 @@
     ]
   },
   "src/routes/__layout.svelte": {
-    "file": "pages/__layout.svelte-830ab4b6.js",
+    "file": "pages/__layout.svelte-2ff931d9.js",
     "src": "src/routes/__layout.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_index-e7b89a6c.js"
+      "_index-13f37429.js"
     ],
     "css": [
-      "assets/pages/__layout.svelte-fc0f3b4b.css"
+      "assets/pages/__layout.svelte-f4d75857.css"
     ],
     "assets": [
       "assets/svelte-logo-87df40b8.svg",
@@ -40,84 +40,92 @@
     ]
   },
   ".svelte-kit/runtime/components/error.svelte": {
-    "file": "error.svelte-35c61de2.js",
+    "file": "error.svelte-ebb8714b.js",
     "src": ".svelte-kit/runtime/components/error.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_index-e7b89a6c.js"
+      "_index-13f37429.js"
     ]
   },
   "src/routes/about.svelte": {
-    "file": "pages/about.svelte-71a93212.js",
+    "file": "pages/about.svelte-6dd14953.js",
     "src": "src/routes/about.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_index-e7b89a6c.js"
+      "_index-13f37429.js"
     ],
     "css": [
       "assets/pages/about.svelte-bf4528fa.css"
     ]
   },
   "src/routes/home.svelte": {
-    "file": "pages/home.svelte-9741f7da.js",
+    "file": "pages/home.svelte-adf98545.js",
     "src": "src/routes/home.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_index-e7b89a6c.js",
-      "_index-17b744fc.js",
-      "_index-f389d900.js"
+      "_index-13f37429.js",
+      "_index-1c3146f0.js",
+      "_index-f8d5b9cb.js"
     ],
     "css": [
-      "assets/pages/home.svelte-ee648092.css"
+      "assets/pages/home.svelte-8756cdee.css"
     ]
   },
   "src/routes/index.svelte": {
-    "file": "pages/index.svelte-05f0110d.js",
+    "file": "pages/index.svelte-d56a6ba1.js",
     "src": "src/routes/index.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_index-e7b89a6c.js",
-      "_index-f389d900.js",
-      "_index-17b744fc.js"
+      "_index-13f37429.js",
+      "_index-1c3146f0.js",
+      "_index-b99bb499.js",
+      "_index-f8d5b9cb.js"
     ],
     "css": [
-      "assets/pages/index.svelte-bb886206.css"
+      "assets/pages/index.svelte-1fd59817.css"
     ]
   },
   "src/routes/todos/index.svelte": {
-    "file": "pages/todos/index.svelte-11bb42d5.js",
+    "file": "pages/todos/index.svelte-2cad4531.js",
     "src": "src/routes/todos/index.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_index-e7b89a6c.js",
-      "_singletons-d1fb5791.js"
+      "_index-13f37429.js",
+      "_singletons-d1fb5791.js",
+      "_index-b99bb499.js"
     ],
     "css": [
       "assets/pages/todos/index.svelte-a910a02d.css"
     ]
   },
-  "_index-e7b89a6c.js": {
-    "file": "chunks/index-e7b89a6c.js"
+  "_index-13f37429.js": {
+    "file": "chunks/index-13f37429.js"
   },
-  "_index-17b744fc.js": {
-    "file": "chunks/index-17b744fc.js",
+  "_index-f8d5b9cb.js": {
+    "file": "chunks/index-f8d5b9cb.js",
     "imports": [
-      "_index-e7b89a6c.js"
+      "_index-13f37429.js"
     ]
   },
   "_singletons-d1fb5791.js": {
     "file": "chunks/singletons-d1fb5791.js"
   },
-  "_index-f389d900.js": {
-    "file": "chunks/index-f389d900.js",
+  "_index-1c3146f0.js": {
+    "file": "chunks/index-1c3146f0.js",
     "imports": [
-      "_index-17b744fc.js",
-      "_index-e7b89a6c.js"
+      "_index-f8d5b9cb.js",
+      "_index-13f37429.js"
+    ]
+  },
+  "_index-b99bb499.js": {
+    "file": "chunks/index-b99bb499.js",
+    "imports": [
+      "_index-13f37429.js"
     ]
   }
 }

@@ -1,5 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
+    import { tweened } from 'svelte/motion';
+	import { cubicOut } from 'svelte/easing';
 
 	import Tesseract from 'tesseract.js';
 
@@ -10,9 +12,18 @@
 	let input_overlay;
 	let ioctx;
     let showImage = false;
-    let percentage = 0;
+    // let percentage = 0;
+
+    let processButton;
+
+    const percentage = tweened(0, {
+		duration: 400,
+		easing: cubicOut
+	});
+    // let buttonColour = "blue";
 
     export let rects = [];
+    export let processed = false;
 
     function handleFile(file) {
         if (file.type.match(/image.*/)) {
@@ -35,16 +46,23 @@
     }
 
 	function logTesseract() {
+        // processButton.innerHTML = "";
 		Tesseract.recognize(
 			input,
 			'eng',
-			{ logger: (m) => {console.log(m); percentage = m.progress*100} }
-			//    ).then(({ data: { text } }) => {
-			//       console.log(text);
-			//    })
+			{ logger: (m) => {
+                console.log(m); 
+                if (m.status == "recognizing text") {
+                    percentage.set(m.progress);
+                }
+            }
+            }
 		).then((data) => {
 			console.log(data.data);
+            processed = true;
 			onResult(data.data);
+            // processButton.innerHTML = "Processed";
+            // processButton.style.color = "white";
 		});
 	}
 
@@ -113,12 +131,16 @@
         </p>
 	</div>
 
-    <button on:click={logTesseract} 
-        class="rounded border text-grey px-10 py-1"
-        style="background: linear-gradient({90}deg, blue {percentage}%, white {percentage}%)"
-    >
-        Process Image
-    </button>
+    <!-- <div class="border-wrap" style="background: linear-gradient({90}deg, green {percentage}%, white {percentage}%)"> -->
+    <div class="bottomLocation flex flex-col">
+        <button on:click={logTesseract} 
+            bind:this={processButton}
+            class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+        >
+            Process Image
+        </button>
+        <progress class="w-full mt-2 h-1" value={$percentage} />
+    </div>
 
 	
     <!-- src="https://tesseract.projectnaptha.com/img/eng_bw.png" -->
@@ -151,16 +173,31 @@
 		/* border: 1px solid #d00;    */
 	}
 
-    button {
-        /* box-sizing: border-box; */
+
+    .bottomLocation {
+        position:absolute;
+        left: 50%;
+        transform: translate(-50%, -20%);
+        width:fit-content;
+        height:fit-content;
+        bottom:0;
+    }
+
+
+    .border-wrap {
         position:absolute;
         left: 50%;
         transform: translate(-50%, -50%);
         width:fit-content;
         height:fit-content;
         bottom:0;
-		/* margin-top: 30px; */
-		/* border: 1px solid #ddd; */
+        max-width: 250px;
+        padding: 1rem;
+        border-radius: 0.35rem;
+        box-sizing: border-box;
+        /* position: relative; */
+        /* background: linear-gradient(to right, red, purple); */
+        padding: 3px;
     }
 
     main {

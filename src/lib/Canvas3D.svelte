@@ -27,6 +27,7 @@
     let ll = lim*lim
 
     export let rects;
+    export let processed;
     export let palette = [[27,62,77],[238,159,47],[252,126,10],[230,75,11],[155,36,31]];
 
     let shapes = []
@@ -133,7 +134,7 @@
     <Canvas>
         <!-- <Pass pass={new AdaptiveToneMappingPass(1, 1)}/> -->
         <!-- <Pass pass={new HalftonePass(1, 1, {radius: 4})}/> -->
-        <Fog color={'#ffffff'} near={22} far={26} />
+        <Fog color={'#ffffff'} near={22} far={28} />
       <PerspectiveCamera position={{ x: 15, y: 8, z: 15 }} fov={24}>
         <OrbitControls
           autoRotate
@@ -184,7 +185,9 @@
       /> -->
     </Canvas>
     
-    <button on:click={generateShapes2} class="rounded bg-blue-600 text-white px-10 py-1">
+    <button on:click={generateShapes2} 
+    class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+    disabled={!processed}>
         Build City
     </button>
 </main>
@@ -200,11 +203,16 @@
         /* box-sizing: border-box; */
         position:absolute;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -60%);
         width:fit-content;
         height:fit-content;
         bottom:0;
 		/* margin-top: 30px; */
 		/* border: 1px solid #ddd; */
+    }
+
+    button:disabled {
+        background: #F5F5F5;
+        color : #C3C3C3;
     }
   </style>
