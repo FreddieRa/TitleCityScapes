@@ -30,7 +30,7 @@
 	<h1 class="font-medium leading-tight text-5xl mt-0 mb-2 text-red-600">About</h1>
 
 	<p>
-		This is a site built to analyse title pages, like the one below, and build cities out of them.
+		This is a site built to analyse title pages, like the one below, and build cities out of them. It uses <a href="https://kit.svelte.dev/">SvelteKit</a>, <a href="https://tailwindcss.com/">Tailwind</a>, <a href="https://tesseract.projectnaptha.com/">Tesseract</a>, <a href="https://threejs.org/">Three.js</a>, and <a href="https://threlte.xyz/docs/introduction">Threlte</a>.
 	</p>
 
     <div class="p-5 grid grid-cols-2 gap-10 justify-items-center w-1/2 m-auto">
@@ -74,6 +74,10 @@
     .test {
         height: 80vh;
         width: 100%;
+    }
+
+    a {
+        @apply text-red-500;
     }
 
 </style>
