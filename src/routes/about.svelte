@@ -1,9 +1,12 @@
 <script context="module">
 	import { browser, dev } from '$app/env';
+    import Canvas3D from '$lib/Canvas3D.svelte';
+    import example from '$lib/json/exampleRects.json'
+
 
 	// we don't need any JS on this page, though we'll load
 	// it in dev so that we get hot module replacement...
-	export const hydrate = dev;
+	// export const hydrate = dev;
 
 	// ...but if the client-side router is already loaded
 	// (i.e. we came here from elsewhere in the app), use it
@@ -11,7 +14,12 @@
 
 	// since there's no dynamic data here, we can prerender
 	// it so that it gets served as a static asset in prod
-	export const prerender = true;
+	// export const prerender = true;
+
+    let processed = true;
+
+    let rects = example;
+
 </script>
 
 <svelte:head>
@@ -19,25 +27,25 @@
 </svelte:head>
 
 <div class="content">
-	<h1>About this app</h1>
+	<h1 class="font-medium leading-tight text-5xl mt-0 mb-2 text-red-600">About</h1>
 
 	<p>
-		This is a <a href="https://kit.svelte.dev">SvelteKit</a> app. You can make your own by typing the
-		following into your command line and following the prompts:
+		This is a site built to analyse title pages, like the one below, and build cities out of them.
 	</p>
 
-	<pre>npm init svelte</pre>
+    <div class="p-5 grid grid-cols-2 gap-10 justify-items-center w-1/2 m-auto">
+        <div class="border">
+            <img src="/Women.jpg" class="p-10" alt="A title page of the work ">
+        </div>
+        <Canvas3D bind:rects bind:processed/>
+    </div>
 
-	<p>
-		The page you're looking at is purely static HTML, with no client-side interactivity needed.
-		Because of that, we don't need to load any JavaScript. Try viewing the page's source, or opening
-		the devtools network panel and reloading.
-	</p>
+    
+    <br>
+    <p>
+        This was directly inspired by the excellent work of <a href="https://c82.net/" class="text-red-500">Nicholas Rougeux</a> and his <a href="https://c82.net/work/?id=385" class="text-red-500">Title Cities</a> project. These beautiful designs 
+    </p>
 
-	<p>
-		The <a href="/todos">TODOs</a> page illustrates SvelteKit's data loading and form handling. Try using
-		it with JavaScript disabled!
-	</p>
 </div>
 
 <style>
@@ -46,4 +54,9 @@
 		max-width: var(--column-width);
 		margin: var(--column-margin-top) auto 0 auto;
 	}
+    .test {
+        height: 80vh;
+        width: 100%;
+    }
+
 </style>

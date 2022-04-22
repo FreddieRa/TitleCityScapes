@@ -35,8 +35,8 @@
                     console.log("Loaded")
                     showImage = true
                     updateCanvas();
+                    processed = false;
                 };
-                updateCanvas();
             }
             reader.readAsDataURL(file);
         }
@@ -70,6 +70,7 @@
 		showBoxes(res);
         console.log(res)
         rects = res.words.map(r => r.bbox);
+        console.log(JSON.stringify(rects))
 	}
 
 	function showBoxes(res) {
@@ -110,6 +111,7 @@
         
         input_overlay.width = img.width;
 		input_overlay.height = img.height;
+        ioctx = null
 		ioctx = input_overlay.getContext('2d');
         console.log(ioctx)
     }

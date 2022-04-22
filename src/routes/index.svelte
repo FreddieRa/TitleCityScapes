@@ -4,8 +4,13 @@
 
     let rects;
     let processed;
+
+    $ : console.log(processed);
 </script>
 
+<svelte:head>
+	<title>Title City Scapes</title>
+</svelte:head>
 
 <main ondragover="return false" class="test">
     <div class="px-5 grid grid-cols-2 gap-10 justify-items-center h-full max-h-fit">

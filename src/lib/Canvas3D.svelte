@@ -1,10 +1,12 @@
 <script>
-    import { CircleBufferGeometry, MeshStandardMaterial, BoxBufferGeometry, SphereBufferGeometry, DoubleSide } from 'three'
+    import { CircleBufferGeometry, MeshStandardMaterial, BoxBufferGeometry, SphereBufferGeometry, DoubleSide, ShaderMaterial, Color } from 'three'
     import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass'
     import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass'
     import { AdaptiveToneMappingPass } from 'three/examples/jsm/postprocessing/AdaptiveToneMappingPass'
-    import { HalftonePass } from 'three/examples/jsm/postprocessing/HalftonePass'
+    // import { HalftonePass } from 'three/examples/jsm/postprocessing/HalftonePass'
     import { SAOPass } from 'three/examples/jsm/postprocessing/SAOPass'
+
+    import colors from '$lib/json/1000.json'
     
     import {
       AmbientLight,
@@ -26,9 +28,14 @@
     let lim = 2
     let ll = lim*lim
 
+    let seed = 0;
+
     export let rects;
     export let processed;
-    export let palette = [[27,62,77],[238,159,47],[252,126,10],[230,75,11],[155,36,31]];
+    // export let oldPalette = [
+    //     [27,62,77],[238,159,47],[252,126,10],[230,75,11],[155,36,31]
+    // ];
+
 
     let shapes = []
 
@@ -69,8 +76,8 @@
                 // If too far out, scale back in
                 if (dist > ll) {
                     let s = Math.sqrt(ll/dist)
-                    x *= s+0.1
-                    z *= s+0.1
+                    x *= s+0.05
+                    z *= s+0.05
                 }
 
                 let y = h/2
@@ -92,10 +99,27 @@
         })
     }
 
+    const hashCode = function(str, seed = 0) {
+        let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+        for (let i = 0, ch; i < str.length; i++) {
+            ch = str.charCodeAt(i);
+            h1 = Math.imul(h1 ^ ch, 2654435761);
+            h2 = Math.imul(h2 ^ ch, 1597334677);
+        }
+        h1 = Math.imul(h1 ^ (h1>>>16), 2246822507) ^ Math.imul(h2 ^ (h2>>>13), 3266489909);
+        h2 = Math.imul(h2 ^ (h2>>>16), 2246822507) ^ Math.imul(h1 ^ (h1>>>13), 3266489909);
+        return 4294967296 * (2097151 & h2) + (h1>>>0);
+    };
+
+
 
     export function generateShapes2() {
         shapes = []
-        let newRects = JSON.parse(JSON.stringify(rects))
+        let string = JSON.stringify(rects)
+        let newRects = JSON.parse(string)
+        let h = hashCode(string, seed)
+        let palette = colors[parseInt(Math.abs(h)) % colors.length]
+        // let palette = colors[Math.floor(Math.random() * colors.length)]
 
         // Sort by height
         newRects.sort((a, b) => {
@@ -112,16 +136,48 @@
             let w = shape.width * iScale
 
             let c = Math.floor(shape.height) % palette.length
-            let [r, g, b] = palette[c]
-            shape.col = rgbToHex(r, g, b)
+            // let [r, g, b] = palette[c]
+            // shape.col = rgbToHex(r, g, b)
+            shape.col = (new Color(palette[c])).offsetHSL(0, 0, -0.3)
+            shape.dark = (new Color(palette[c])).offsetHSL(0, 0, -0.7)
 
-            let radius = (i/12 + w)
+
+            let radius = (i/24 + w)
             let theta = i + shape.width
 
             shape.x = Math.cos(theta) * radius
             shape.z = Math.sin(theta) * radius
 
             shape.y = h/2
+
+//             shape.geometry = new BoxBufferGeometry(shape.width, shape.height, shape.width)
+//             // shape.geometry.computeBoundingBox();
+            shape.material1 = new MeshStandardMaterial({ color: shape.col })
+            shape.material2 = new ShaderMaterial({
+                uniforms: {
+                    colorA: {type: 'vec3', value: shape.col},
+                    colorB: {type: 'vec3', value: shape.dark},
+                },
+                vertexShader: `
+varying vec2 vUv; 
+
+void main() {
+vUv = uv; 
+
+vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+gl_Position = projectionMatrix * modelViewPosition; 
+}
+                `,
+                fragmentShader: `
+uniform vec3 colorA; 
+uniform vec3 colorB; 
+varying vec2 vUv;
+
+void main() {
+    gl_FragColor = vec4(mix(colorB, colorA, vUv.y), 1.0);
+}
+                `,
+              })
             
             shapes.push(shape)
         }
@@ -149,23 +205,15 @@
   
       <!-- Cube -->
       <Group scale={$scale}>
-        <!-- <Mesh
-          interactive
-          on:pointerenter={() => ($scale = 2)}
-          on:pointerleave={() => ($scale = 1)}
-          position={{ y: 0.5 }}
-          castShadow
-          geometry={new BoxBufferGeometry(1, 1, 1)}
-          material={new MeshStandardMaterial({ color: '#333333' })}
-        /> -->
         {#each shapes as shape}
+
         <Mesh
             interactive
             scale={iScale}
             position={{x: shape.x, y: shape.y-1.5, z: shape.z}}
             castShadow
             geometry={new BoxBufferGeometry(shape.width, shape.height, shape.width)}
-            material={new MeshStandardMaterial({ color: shape.col })}
+            material={shape.material2}
         />
         {/each}
       </Group>
@@ -185,11 +233,19 @@
       /> -->
     </Canvas>
     
-    <button on:click={generateShapes2} 
-    class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-    disabled={!processed}>
-        Build City
-    </button>
+    <div class="bottomDiv flex flex-row">
+        <button on:click={generateShapes2} 
+        class="inline-block mx-5 px-2 py-1 lg:px-6 lg:py-2.5 bg-blue-600 text-white font-medium text-2xs  leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+        disabled={!processed}>
+            Build City
+        </button>
+
+        <button on:click={() => {seed = Math.floor(Math.random() * 100000); generateShapes2()}} 
+        class="inline-block mx-5 px-2 py-1 lg:px-6 lg:py-2.5 bg-blue-600 text-white font-medium text-2xs  leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+        disabled={!processed}>
+            New Colours
+        </button>
+    </div>
 </main>
   
   <style>
@@ -199,7 +255,7 @@
       width: 100%;
     }
 
-    button {
+    .bottomDiv {
         /* box-sizing: border-box; */
         position:absolute;
         left: 50%;

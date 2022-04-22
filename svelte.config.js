@@ -16,7 +16,7 @@ const config = {
         exclude: ['three']
       },
       ssr: {
-        noExternal: ['three', 'chart.js', 'd3', 'c3']
+        noExternal: ['three', 'exampleRects', 'chart.js', 'd3', 'c3']
       }
     }
   },
