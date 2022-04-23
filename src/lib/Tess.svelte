@@ -38,6 +38,9 @@
     let rectStart = false;
     let finished = false;
 
+    let realWidth = 0;
+    let realHeight = 0;
+
     function handleFile(file) {
         if (file.type.match(/image.*/)) {
             let reader = new FileReader();
@@ -47,7 +50,9 @@
                 img.onload = () => {
                     console.log("Loaded")
                     showImage = true
-                    setTimeout(updateCanvas, 2000);
+                    realWidth = img.naturalWidth;
+                    realHeight = img.naturalHeight;
+                    setTimeout(updateCanvas, 500);
                     processed = false;
                 };
             }
@@ -87,17 +92,29 @@
         console.log(JSON.stringify(rects))
 	}
 
+    function getX(x) {
+        return x * input.width / realWidth ;
+    } 
+
+    function getY(y) {
+        return y * input.height / realHeight;
+    }
+
+
 	function showBoxes() {
         for (let b of rects) {
             ioctx.strokeWidth = 2;
             ioctx.strokeStyle = 'red';
-            ioctx.strokeRect(b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0)
+            let x0 = getX(b.x0)
+            let y0 = getY(b.y0)
+            let x1 = getX(b.x1)
+            let y1 = getY(b.y1)
+            ioctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
         }
 
 	}
 
 	onMount(() => {
-
         document.body.addEventListener('drop', async function(e){
             e.preventDefault();
             e.stopPropagation();
@@ -107,13 +124,6 @@
 	});
 
     function updateCanvas() {
-        // console.log(input)
-        // let cs = getComputedStyle(input)
-        // console.log(cs)
-        // console.log(cs.width)
-        // console.log(cs.height)  
-        // let width = parseInt(cs.getPropertyValue('width'), 10);
-        // let height = parseInt(cs.getPropertyValue('height'), 10);
         let width = input.width;
         let height = input.height;
         input_overlay.width = width;
@@ -123,8 +133,6 @@
 
     function getMousePos(canvas, evt) {
         let bb = canvas.getBoundingClientRect();
-        let s1 = 1;
-        let s2 = 1;
 
         return {
             x: (evt.clientX - bb.left) / (bb.right - bb.left) * canvas.width,
@@ -187,17 +195,20 @@
     function deleteBoxes() {
         // If they have not finished drawing the box
         if (finished) {
-            
+            let newRects = [];
             for (let rect of rects) {
                 // Check whether the rect is within the box
-                if (rect.x0 >= finished.x0 && 
-                    rect.x1 <= finished.x1 && 
-                    rect.y0 >= finished.y0 && 
-                    rect.y1 <= finished.y1) {
+                if (getX(rect.x0) >= finished.x0 && 
+                    getX(rect.x1) <= finished.x1 && 
+                    getY(rect.y0) >= finished.y0 && 
+                    getY(rect.y1) <= finished.y1) {
                         // Remove the box from the array
-                        rects.splice(rects.indexOf(rect), 1);
+                        // rects.splice(rects.indexOf(rect), 1);
+                } else {
+                    newRects.push(rect);
                 }
             }
+            rects = newRects;
             // Clear the canvas
             ioctx.clearRect(0, 0, 10000, 10000);
             // Show the boxes
@@ -230,7 +241,7 @@
             class="toFit positioning"
             alt="input"
         />
-        <p hidden={showImage} class="toFit text-slate-500" id="text">
+        <p hidden={showImage} class="toFit positioning text-slate-500 " id="text">
             Drag an Image to Start
         </p>
 	</div>
