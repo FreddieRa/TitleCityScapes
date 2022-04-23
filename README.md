@@ -23,3 +23,9 @@
 <p> 
     Please go and check out his website, featuring some awesome projects, and buy a <a href="https://www.zazzle.com/store/creativ82">poster</a>!
 </p>
+
+If you want to run it yourself and play around, it should be just as easy as running:
+```bash
+npm install
+npm run dev -- --open
+```
