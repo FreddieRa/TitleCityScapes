@@ -350,4 +350,8 @@
 		background: #f5f5f5;
 		color: #c3c3c3;
 	}
+
+    input {
+        filter: invert(100%);
+    }
 </style>

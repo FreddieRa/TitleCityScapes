@@ -47,7 +47,7 @@
                 img.onload = () => {
                     console.log("Loaded")
                     showImage = true
-                    updateCanvas();
+                    setTimeout(updateCanvas, 2000);
                     processed = false;
                 };
             }
@@ -97,7 +97,6 @@
 	}
 
 	onMount(() => {
-		updateCanvas();
 
         document.body.addEventListener('drop', async function(e){
             e.preventDefault();
@@ -108,28 +107,35 @@
 	});
 
     function updateCanvas() {
-        let img = document.getElementById('input');
-        
-        input_overlay.width = img.width;
-		input_overlay.height = img.height;
-        ioctx = null
-		ioctx = input_overlay.getContext('2d');
-        console.log(ioctx)
+        // console.log(input)
+        // let cs = getComputedStyle(input)
+        // console.log(cs)
+        // console.log(cs.width)
+        // console.log(cs.height)  
+        // let width = parseInt(cs.getPropertyValue('width'), 10);
+        // let height = parseInt(cs.getPropertyValue('height'), 10);
+        let width = input.width;
+        let height = input.height;
+        input_overlay.width = width;
+        input_overlay.height = height;
+        ioctx = input_overlay.getContext('2d');
     }
 
     function getMousePos(canvas, evt) {
-        var rect = canvas.getBoundingClientRect();
+        let bb = canvas.getBoundingClientRect();
         let s1 = 1;
         let s2 = 1;
 
         return {
-            x: (evt.clientX - rect.left*s1) / (rect.right*s1 - rect.left*s1) * canvas.width * s2,
-            y: (evt.clientY - rect.top*s1) / (rect.bottom*s1 - rect.top*s1)  * canvas.height * s2
+            x: (evt.clientX - bb.left) / (bb.right - bb.left) * canvas.width,
+            y: (evt.clientY - bb.top) / (bb.bottom - bb.top)  * canvas.height
         };
+
     }
 
 
     function startRect(e) {
+        // if (mode == 0) return
        console.log(e)
        rectStart = getMousePos(input_overlay, e)
     }
@@ -215,12 +221,13 @@
         on:mouseup={finishRect}
         
         bind:this={input_overlay}
-         id="input-overlay" class="toFit"/>
+         id="input-overlay" 
+         class="positioning mt-5"/>
         <img
             bind:this={input}
             hidden={!showImage}
             id="input"
-            class="toFit"
+            class="toFit positioning"
             alt="input"
         />
         <p hidden={showImage} class="toFit text-slate-500" id="text">
@@ -236,7 +243,7 @@
         >
             Process Image
         </button>
-        <progress class="w-full mt-2 h-1" value={$percentage} />
+        <progress class=" mt-2 h-1" width={500} value={$percentage} />
     </div>
 
     <div class="leftLocation flex flex-col">
@@ -273,11 +280,13 @@
     .toFit {
         max-height:73vh;
         max-width: 40vw;
+		padding: 20px;
+    }
 
-		position: absolute;
+    .positioning {
+        position: absolute;
         left: 50%;
         transform: translate(-50%, 0);
-		padding: 20px;
     }
 
 	#input-overlay {
@@ -304,7 +313,6 @@
         height:fit-content;
 
     }
-
 
     .border-wrap {
         position:absolute;
