@@ -14,6 +14,15 @@
     let showImage = false;
     // let percentage = 0;
 
+    let res;
+
+    let mode = 0;
+    let modes = {
+        0: "Nothing",
+        1: "Add boxes",
+        2: "Remove boxes",
+    }
+
     let processButton;
 
     const percentage = tweened(0, {
@@ -24,6 +33,10 @@
 
     export let rects = [];
     export let processed = false;
+
+
+    let rectStart = false;
+    let finished = false;
 
     function handleFile(file) {
         if (file.type.match(/image.*/)) {
@@ -60,40 +73,27 @@
 		).then((data) => {
 			console.log(data.data);
             processed = true;
-			onResult(data.data);
+            res = data.data;
+			onResult(res);
             // processButton.innerHTML = "Processed";
             // processButton.style.color = "white";
 		});
 	}
 
 	function onResult(res) {
-		showBoxes(res);
         console.log(res)
         rects = res.words.map(r => r.bbox);
+        showBoxes();
         console.log(JSON.stringify(rects))
 	}
 
-	function showBoxes(res) {
-		res.words.forEach(function (w) {
-			var b = w.bbox;
-            var c = w.confidence;
+	function showBoxes() {
+        for (let b of rects) {
+            ioctx.strokeWidth = 2;
+            ioctx.strokeStyle = 'red';
+            ioctx.strokeRect(b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0)
+        }
 
-            if (c >= 0) {
-                ioctx.strokeWidth = 2;
-
-                ioctx.strokeStyle = 'red';
-                ioctx.strokeRect(b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0);
-                ioctx.beginPath();
-                ioctx.moveTo(w.baseline.x0, w.baseline.y0);
-                ioctx.lineTo(w.baseline.x1, w.baseline.y1);
-                ioctx.strokeStyle = 'green';
-                ioctx.stroke();
-            }
-
-			// octx.font = '20px Times';
-			// octx.font = 20 * (b.x1 - b.x0) / octx.measureText(w.text).width + "px Times";
-			// octx.fillText(w.text, b.x0, w.baseline.y0);
-		});
 	}
 
 	onMount(() => {
@@ -104,6 +104,7 @@
             e.stopPropagation();
             handleFile(e.dataTransfer.files[0]);
         });
+        document.body.addEventListener('keydown', onEnter, false)
 	});
 
     function updateCanvas() {
@@ -115,12 +116,106 @@
 		ioctx = input_overlay.getContext('2d');
         console.log(ioctx)
     }
+
+    function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        let s1 = 1;
+        let s2 = 1;
+
+        return {
+            x: (evt.clientX - rect.left*s1) / (rect.right*s1 - rect.left*s1) * canvas.width * s2,
+            y: (evt.clientY - rect.top*s1) / (rect.bottom*s1 - rect.top*s1)  * canvas.height * s2
+        };
+    }
+
+
+    function startRect(e) {
+       console.log(e)
+       rectStart = getMousePos(input_overlay, e)
+    }
+
+    function drawRect(e) {
+        if (rectStart) {
+            ioctx.clearRect(0, 0, 10000, 10000);
+            showBoxes();
+            ioctx.strokeStyle = mode == 1 ? 'green' : 'blue';
+            let {x, y} = getMousePos(input_overlay, e);
+            ioctx.strokeRect(rectStart.x, rectStart.y, x - rectStart.x, y - rectStart.y);
+        }
+    }
+
+    function finishRect(e) {
+        let {x, y} = getMousePos(input_overlay, e);
+        finished = {
+            x0: rectStart.x,
+            y0: rectStart.y,
+            x1: x,
+            y1: y
+        }
+        rectStart = false;
+    }
+
+    function onEnter(e) {
+        if (e.keyCode == 13) {
+            switch (mode) {
+                case 1: addNewBox(); break;
+                case 2: deleteBoxes(); break;
+            }
+        }
+    }
+
+    function addNewBox() {
+        // If they have not finished drawing the box
+        if (finished) {
+            // Add the box to the array
+            rects.push(finished);
+            // Clear the canvas
+            ioctx.clearRect(0, 0, 10000, 10000);
+            // Show the boxes
+            showBoxes();
+            // Reset the finished box
+            finished = false;
+        }
+    }
+
+    function deleteBoxes() {
+        // If they have not finished drawing the box
+        if (finished) {
+            
+            for (let rect of rects) {
+                // Check whether the rect is within the box
+                if (rect.x0 >= finished.x0 && 
+                    rect.x1 <= finished.x1 && 
+                    rect.y0 >= finished.y0 && 
+                    rect.y1 <= finished.y1) {
+                        // Remove the box from the array
+                        rects.splice(rects.indexOf(rect), 1);
+                }
+            }
+            // Clear the canvas
+            ioctx.clearRect(0, 0, 10000, 10000);
+            // Show the boxes
+            showBoxes();
+            // Reset the finished box
+            finished = false;
+        }
+    }
+
+
 </script>
 
-<main ondragover="return false" class="border left-0 right-0 top-0 bottom-0 items-center">
+<main 
+    ondragover="return false;"
+    class="border left-0 right-0 top-0 bottom-0 items-center">
 
-	<div bind:this={div} id="img-container" class="">
-		<canvas bind:this={input_overlay} id="input-overlay" class="toFit"/>
+	<div bind:this={div} id="img-container" class="" >
+		<canvas 
+        on:mousedown={startRect}
+        on:mousemove={drawRect}
+        on:mouseup={finishRect}
+        
+        bind:this={input_overlay}
+         id="input-overlay" class="toFit"/>
         <img
             bind:this={input}
             hidden={!showImage}
@@ -142,6 +237,21 @@
             Process Image
         </button>
         <progress class="w-full mt-2 h-1" value={$percentage} />
+    </div>
+
+    <div class="leftLocation flex flex-col">
+        <button on:click={() => mode = 1} 
+        disabled={!processed}
+            class="inline-block px-5 py-2 m-2 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out"
+        >
+            +
+        </button>
+        <button on:click={() => mode = 2} 
+        disabled={!processed}
+        class="inline-block px-5 py-2 m-2 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+    >
+        -
+    </button>
     </div>
 
 	
@@ -172,6 +282,7 @@
 
 	#input-overlay {
         z-index: 20;
+        cursor: crosshair;
 		/* border: 1px solid #d00;    */
 	}
 
@@ -183,6 +294,15 @@
         width:fit-content;
         height:fit-content;
         bottom:0;
+    }
+
+    .leftLocation {
+        position:absolute;
+        left: 2%;
+        top: 2%;
+        width:fit-content;
+        height:fit-content;
+
     }
 
 
@@ -209,6 +329,11 @@
         height:100%;
         width:100%;
     }
+
+    button:disabled {
+		background: #f5f5f5;
+		color: #c3c3c3;
+	}
 
 
 </style>

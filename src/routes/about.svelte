@@ -55,12 +55,12 @@
     </p>
 
     <div class="flex flex-row m-10">
+        <button
+        onclick="location.href='https://c82.net/work/?id=385'"
+        class="mx-10 inline-block px-6 py-2.5 bg-red-600 text-white font-medium text-xl leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out">Website</button>
         <button 
-        class="mx-10 inline-block px-6 py-2.5 bg-red-600 text-white font-medium text-xl leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out"
-        href="https://c82.net/work/?id=385">Website</button>
-        <button 
-        class="mx-10 inline-block px-6 py-2.5 bg-red-600 text-white font-medium text-xl leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out"
-        href="https://www.zazzle.com/store/creativ82">Posters</button>
+        onclick="location.href='https://www.zazzle.com/store/creativ8'"
+        class="mx-10 inline-block px-6 py-2.5 bg-red-600 text-white font-medium text-xl leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out">Posters</button>
     </div>
 
 </div>
