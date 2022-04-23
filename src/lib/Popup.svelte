@@ -32,7 +32,7 @@
 
   <br>
 
-  <p>If the text recognition doesnt work perfectly, then you can click the <b>+</b> button to draw your own rectangles in, or <b>-</b> button to drag a selection around any boxes you want deleted (this can take a few goes for some reason). Hit enter in both modes to confirm the box!</p>
+  <p>If the text recognition doesnt work perfectly, then you can click the <b>+</b> button to draw your own rectangles in, or <b>-</b> button to drag a selection around any boxes you want deleted. Hit enter in both modes to confirm the box, and click <code> Build City </code> again when finished.</p>
 
   <br>
   

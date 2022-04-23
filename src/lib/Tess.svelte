@@ -5,6 +5,10 @@
 
 	import Tesseract from 'tesseract.js';
 
+    import ProgressBar from 'svelte-progress-bar'
+
+	let progress;
+
 	let div;
 	let input;
 	let w;
@@ -25,10 +29,6 @@
 
     let processButton;
 
-    const percentage = tweened(0, {
-		duration: 400,
-		easing: cubicOut
-	});
     // let buttonColour = "red";
 
     export let rects = [];
@@ -71,7 +71,8 @@
 			{ logger: (m) => {
                 console.log(m); 
                 if (m.status == "recognizing text") {
-                    percentage.set(m.progress);
+                    progress.setWidthRatio(m.progress)
+                    if (m.progress == 1) progress.complete();
                 }
             }
             }
@@ -224,7 +225,7 @@
 <main 
     ondragover="return false;"
     class="border left-0 right-0 top-0 bottom-0 items-center">
-
+    <ProgressBar bind:this={progress} color="#dc2626"/>
 	<div bind:this={div} id="img-container" class="" >
 		<canvas 
         on:mousedown={startRect}
@@ -250,11 +251,11 @@
     <div class="bottomLocation flex flex-col">
         <button on:click={logTesseract} 
             bind:this={processButton}
-            class="inline-block px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out"
+            class="inline-block px-6 py-2.5 m-2 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out"
         >
             Process Image
         </button>
-        <progress class=" mt-2 h-1" width={500} value={$percentage} />
+
     </div>
 
     <div class="leftLocation flex flex-col">
@@ -354,5 +355,10 @@
 		color: #c3c3c3;
 	}
 
+    progress {
+        width:  200%;  
+        transform: translate(-25%, 0);
+        color: red;
+    }
 
 </style>

@@ -244,7 +244,7 @@
         <!-- <ContextBridge bind:ctx /> -->
 		<!-- <Pass pass={new AdaptiveToneMappingPass(1, 1)}/> -->
 		<!-- <Pass pass={new HalftonePass(1, 1, {radius: 4})}/> -->
-		<Fog color={'#ffffff'} near={22} far={28} />
+		<Fog color={'#ffffff'} near={40} far={50} />
 		<PerspectiveCamera position={{ x: 15, y: 8, z: 15 }} fov={24} bind:camera>
 			<OrbitControls autoRotate enableZoom={true} target={{ y: 0.5 }} />
 		</PerspectiveCamera>
