@@ -45,7 +45,6 @@
 	let iScale = 0.01;
 	let dScale = 4;
 	let lim = 2;
-	let ll = lim * lim;
 
     let ctx;
     let camera;
@@ -60,9 +59,10 @@
 	export let rects;
 	export let processed;
 	
+    $: if (rects) generateShapes2();
 
     const buildProgress = tweened(0, {
-		duration: 1500,
+		duration: 2000,
 		easing: cubicIn
 	});
 
@@ -241,25 +241,15 @@
 
 <main class="border">
 	<Canvas bind:ctx rendererParameters={{preserveDrawingBuffer: false, antialiasing: false}}>
-        <!-- <ContextBridge bind:ctx /> -->
-		<!-- <Pass pass={new AdaptiveToneMappingPass(1, 1)}/> -->
 		<!-- <Pass pass={new HalftonePass(1, 1, {radius: 4})}/> -->
 		<Fog color={'#ffffff'} near={40} far={50} />
 		<PerspectiveCamera position={{ x: 15, y: 8, z: 15 }} fov={24} bind:camera>
-			<OrbitControls autoRotate enableZoom={true} target={{ y: 0.5 }} />
+		    <OrbitControls autoRotate enableZoom={true} target={{ y: 0.5 }} />
 		</PerspectiveCamera>
 
 		<DirectionalLight shadow position={{ x: 3, y: 10, z: 10 }} intensity={3} />
-		<!-- <DirectionalLight shadow position={{ x: -3, y: 10, z: -10 }} intensity={2} /> -->
 		<AmbientLight intensity={0.7} />
 
-		<!-- Cube -->
-
-        <!-- Anim 1
-        scale={{x: iScale, y: iScale * $buildProgress, z: iScale}}
-		position={{ x: shape.x, y: shape.y * $buildProgress - 1.5, z: shape.z }} -->
-
-        <!-- 150 * (bound(1 - $buildProgress - shape.offset, 0, 1)) +  -->
 		<Group scale={$scale}>
 			{#each shapes as shape}
 				<Mesh
@@ -282,10 +272,7 @@
 			material={new MeshStandardMaterial({ side: DoubleSide, color: 'grey' })}
 		/>
 
-		<!-- <Mesh
-        geometry={new SphereBufferGeometry(1000, 72, 72)}
-        material={new MeshStandardMaterial({ side: DoubleSide, color: 'white' })}
-      /> -->
+
 	</Canvas>
 
 	<div class="bottomDiv flex flex-row">

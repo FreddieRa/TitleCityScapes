@@ -32,7 +32,7 @@
     <Modal show={$modal}>
         <div class="px-5 grid grid-cols-2 gap-10 justify-items-center h-full max-h-fit">
             <Tesseract bind:rects bind:processed/>
-            <Canvas3D bind:rects bind:processed/>
+            <Canvas3D rects={rects} bind:processed/>
         </div>
     </Modal>
 </main>

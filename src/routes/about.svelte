@@ -1,4 +1,5 @@
-<script context="module">
+<script>
+	import { onMount } from 'svelte';
 	import { browser, dev } from '$app/env';
     import Canvas3D from '$lib/Canvas3D.svelte';
     import example from '$lib/json/exampleRects.json'
@@ -17,6 +18,13 @@
 	// export const prerender = true;
 
     let processed = true;
+    let showCanvas = false;
+
+    onMount(() => {
+        setTimeout(() => {
+            showCanvas = true;
+        }, 200);
+    })
 
     let rects = example;
 
@@ -37,7 +45,10 @@
         <div class="border">
             <img src="/images/Women.jpg" class="p-10" alt="A title page of the work ">
         </div>
-        <Canvas3D bind:rects bind:processed/>
+        {#if (showCanvas == true)}
+            <Canvas3D rects={rects} bind:processed/>
+        {/if}
+
     </div>
 
     
@@ -59,7 +70,7 @@
         onclick="location.href='https://c82.net/work/?id=385'"
         class="mx-10 inline-block px-6 py-2.5 bg-red-600 text-white font-medium text-xl leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out">Website</button>
         <button 
-        onclick="location.href='https://www.zazzle.com/store/creativ8'"
+        onclick="location.href='https://www.zazzle.com/store/creativ82'"
         class="mx-10 inline-block px-6 py-2.5 bg-red-600 text-white font-medium text-xl leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out">Posters</button>
     </div>
 
