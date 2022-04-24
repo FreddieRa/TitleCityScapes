@@ -62,9 +62,15 @@
 	export let rects;
 	export let processed;
 	
-    $: if (rects) generateShapes2();
+    $: if (rects) {
+        buildProgress = tweened(0, {
+            duration: 2000,
+            easing: cubicIn
+        });
+        generateShapes2();
+    } 
 
-    const buildProgress = tweened(0, {
+    let buildProgress = tweened(0, {
 		duration: 2000,
 		easing: cubicIn
 	});
@@ -112,6 +118,7 @@
 	};
 
 	export function generateShapes2() {
+        buildProgress.set(0);
 		shapes = [];
         objects = [];
 
