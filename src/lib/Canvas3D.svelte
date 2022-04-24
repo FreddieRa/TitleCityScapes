@@ -21,6 +21,7 @@
 		Mesh,
 		OrbitControls,
 		PerspectiveCamera,
+        OrthographicCamera,
 		Pass,
 		Fog,
 		useThrelte,
@@ -48,7 +49,9 @@
 
     let ctx;
     let camera;
-    $: console.log(ctx)
+    let camera2;
+    let ortho = false;
+    $: console.log(ortho)
 	let seed = 0;
 
 	let texture;
@@ -243,7 +246,10 @@
 	<Canvas bind:ctx rendererParameters={{preserveDrawingBuffer: false, antialiasing: false}}>
 		<!-- <Pass pass={new HalftonePass(1, 1, {radius: 4})}/> -->
 		<Fog color={'#ffffff'} near={40} far={50} />
-		<PerspectiveCamera position={{ x: 15, y: 8, z: 15 }} fov={24} bind:camera>
+		<OrthographicCamera position={{ x: 15, y: 8, z: 15 }} zoom={70} useCamera={ortho} bind:camera>
+		    <OrbitControls autoRotate enableZoom={true} target={{ y: 0.5 }} />
+		</OrthographicCamera>
+        <PerspectiveCamera position={{ x: 15, y: 8, z: 15 }} fov={24} useCamera={ortho != true} bind:camera2>
 		    <OrbitControls autoRotate enableZoom={true} target={{ y: 0.5 }} />
 		</PerspectiveCamera>
 
@@ -300,7 +306,13 @@
 	</div>
 
     <div class="rightLocation flex flex-row bg-red-500 rounded-full p-1.5">
-        <input type="image" on:click={screenshot} src="/images/camera-icon-21.png" width="30" alt="Camera icon">
+        <input type="image" on:click={screenshot} id="cameraIcon" src="/images/camera-icon-21.png" width="30" alt="Camera icon">
+    </div>
+
+    <div class="bottomRight form-check">
+        <input type="checkbox" 
+        class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-red-600 checked:border-red-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" 
+        bind:checked={ortho}>
     </div>
 </main>
 
@@ -333,12 +345,21 @@
 
     }
 
+    .bottomRight {
+        position:absolute;
+        right: 1%;
+        bottom: 2%;
+        width:fit-content;
+        height:fit-content;
+
+    }
+
 	button:disabled {
 		background: #f5f5f5;
 		color: #c3c3c3;
 	}
 
-    input {
+    #cameraIcon {
         filter: invert(100%);
     }
 </style>

@@ -28,7 +28,7 @@
   <p>When this is done, and there are rectangles around the words, press the <code> Build City </code> button to see those shapes come to life. You can drag to move the 3D model, and scroll to zoom.</p>
   <br>
 
-  <p>Click the camera icon in the top right to save an image of your city.</p>
+  <p>Click the camera icon in the top right to save an image of your city, and click the checkbox in the bottom right to swap between perspecitve and orthographic cameras.</p>
 
   <br>
 
